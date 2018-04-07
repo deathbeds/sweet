@@ -1,6 +1,8 @@
 
 # testing is __Sweet__
     
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/deathbeds/sweet/master?filepath=readme.ipynb) 
+   
 __Sweet__ is an easy way to test interactive code. It combines unittest, doctest, and hypothesis to promoting better code health.
 
 
@@ -30,7 +32,7 @@ __Sweet__ is an easy way to test interactive code. It combines unittest, doctest
 ```
 
     [NbConvertApp] Converting notebook readme.ipynb to markdown
-    [NbConvertApp] Writing 882 bytes to readme.md
+    [NbConvertApp] Writing 1004 bytes to readme.md
     <unittest.result.TestResult run=2 errors=0 failures=0>
     <unittest.result.TestResult run=4 errors=0 failures=0>
 
