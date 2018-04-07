@@ -12,6 +12,9 @@ from functools import partial
 doctest = True
 unittest = True
 loader = TestLoader()
+from types import ModuleType
+from ast import NodeTransformer
+
 
 
 # In[2]:
@@ -76,6 +79,16 @@ def infer(object)->TestCase:
 # In[4]:
 
 
+class Result(TestResult):
+    def __repr__(Result, *, str=""""""):
+        if Result.errors: str += f"""\n{dict(Result.errors)}"""
+        if Result.failures: str += f"""\n{dict(Result.failures)}"""
+        return '\n'.join((super().__repr__(), str)).rstrip()
+
+
+# In[5]:
+
+
 @dataclass
 class Sweet(TestSuite):
     """A TestSuite.
@@ -83,7 +96,7 @@ class Sweet(TestSuite):
     _tests: list = field(default_factory=list)
     module: __import__('types').ModuleType = field(default=__import__('__main__'))
     loader: TestLoader = field(default_factory=TestLoader, repr=False)
-    result: TestResult = field(default_factory=TestResult)
+    result: TestResult = field(default_factory=Result)
     doctest: bool = True
     unittest: bool = True
     
@@ -105,7 +118,7 @@ class Sweet(TestSuite):
         finally: Discover._tests = list(filter(bool, Discover._tests))
 
 
-# In[5]:
+# In[6]:
 
 
 settings.register_profile('sweet', settings(
@@ -113,11 +126,57 @@ settings.register_profile('sweet', settings(
         verbosity=Verbosity.normal,))
 
 settings.load_profile('sweet')
-def load_ipython_extension(ip=None):
-    ...
+
+
+# In[7]:
+
+
+@dataclass
+class Testing(NodeTransformer):
+    """Testing must be callable so it can be using as an {IPython.core.events.EventManager}
+    >>> assert callable(Testing())
+    """
+    objects = list()
+    def visit_FunctionDef(Testing, node): 
+        """Identify FunctionDef and ClassDef as potentially testable objects.            
+        
+        >>> visitor = Testing()
+        >>> assert visitor.visit(__import__('ast').parse('def f(): ...'))
+        >>> assert visitor.objects
+        """
+        Testing.objects.append(node.name)
+        return node
+    
+    visit_ClassDef = visit_FunctionDef
+    
+    def __call__(Testing):
+        main, module = __import__('__main__'), ModuleType('__interactive')
+        while Testing.objects:
+            name = Testing.objects.pop(0)
+            if hasattr(main, name): setattr(module, name, getattr(main, name))
+        sweet = Sweet(module=module)
+        if sweet._tests:
+            print(repr(sweet.run()))
 
 
 # In[8]:
+
+
+def unload_ipython_extension(ip=None):
+        ip = ip or get_ipython()
+        ip.events.callbacks['post_run_cell'] = [object for object in ip.events.callbacks['post_run_cell'] if not isinstance(object, Testing)]
+
+
+# In[9]:
+
+
+def load_ipython_extension(ip=get_ipython()):
+        object = Testing()
+        ip.ast_transformers.append(object)        
+        ip.events.register('post_run_cell', object)
+
+
+# In[10]:
 
 
 if __name__ == '__main__':
@@ -126,4 +185,6 @@ if __name__ == '__main__':
     get_ipython().system('rm readme.py')
     print(result)
     print(Sweet(module=__name__).run(result))
+    unload_ipython_extension()
+    load_ipython_extension()
 

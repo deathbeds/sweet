@@ -7,7 +7,8 @@ __Sweet__ is an easy way to test interactive code. It combines unittest, doctest
 
 
 ```python
-    from sweet import Sweet
+    if __name__ == '__main__':
+        %reload_ext sweet
 ```
 
 
@@ -20,23 +21,37 @@ __Sweet__ is an easy way to test interactive code. It combines unittest, doctest
         The docstring is also tested.
         """
         assert True
-        
+```
+
+
+```python
     ct = 0
     def when_there_are_annotations(x: int):
         global ct
         ct +=1
         return x
+```
 
+    <sweet.Result run=1 errors=0 failures=0>
+
+
+
+```python
     def after_hypothesis():
         global ct
         assert ct > 0
 ```
 
+    <sweet.Result run=1 errors=0 failures=0>
+
+
 
 ```python
     if __name__ == '__main__':
         !jupyter nbconvert --to markdown readme.ipynb
+        from sweet import Sweet
         result = Sweet().run()
-        print(result)
-        print(Sweet(module='sweet').run(result))
+        print(f"""The readme shows the {result}""")
+        print(f"""and the source shows the {Sweet(module='sweet').run(result)}""")
+        print("🏆")
 ```
