@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[3]:
+# In[1]:
 
 
 from hypothesis import assume, HealthCheck, Verbosity, settings
@@ -12,10 +12,6 @@ from functools import partial
 doctest = True
 unittest = True
 loader = TestLoader()
-if __name__ == '__main__':
-    get_ipython().run_line_magic('load_ext', 'rites')
-    get_ipython().run_line_magic('rites', 'autoreload')
-    get_ipython().run_line_magic('autoreload', '2')
 
 
 # In[2]:
@@ -42,7 +38,7 @@ def discover(module='__main__', suite=None, *, doctest=doctest, unittest=unittes
     return suite
 
 
-# In[4]:
+# In[3]:
 
 
 def infer(object)->TestCase:
@@ -77,7 +73,7 @@ def infer(object)->TestCase:
         return FunctionTestCase(partial(find, *annotations.values(), lambda x: returns(object(x))))
 
 
-# In[18]:
+# In[4]:
 
 
 @dataclass
@@ -109,7 +105,7 @@ class Sweet(TestSuite):
         finally: Discover._tests = list(filter(bool, Discover._tests))
 
 
-# In[19]:
+# In[5]:
 
 
 settings.register_profile('ip', settings(
@@ -124,9 +120,10 @@ def load_ipython_extension(ip=None):
 
 
 if __name__ == '__main__':
-    get_ipython().system('jupyter nbconvert --to python sweet.ipynb')
-    from importlib import reload
+    get_ipython().system('jupyter nbconvert --to python sweet.ipynb readme.ipynb')
+    
     result = Sweet(module='readme').run()
+    get_ipython().system('rm readme.py')
     print(result)
     print(Sweet(module=__name__).run(result))
 
