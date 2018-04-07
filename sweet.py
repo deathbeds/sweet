@@ -20,28 +20,34 @@ from ast import NodeTransformer
 # In[2]:
 
 
+from inspect import getmodule, getmodulename
+
+
+# In[3]:
+
+
 def discover(module='__main__', suite=None, *, doctest=doctest, unittest=unittest, loader=loader):
-    from doctest import DocTestSuite
+    from doctest import DocTestCase, DocTestFinder
     if isinstance(module, str): module = __import__('importlib').import_module(module)
     if suite is None:
         return Sweet(module=module, doctest=doctest, unittest=unittest, loader=loader)    
     
     for name, object in vars(module).items():
-        if unittest:
-            if isinstance(object, type) and issubclass(object, TestCase):
-                suite.addTests(loader.loadTestsFromTestCase(object)._tests)
-            
-            if callable(object) and not isinstance(object, (partial, type)):
-                function_test_case = infer(object)
-                if function_test_case:
-                    suite.addTest(function_test_case)
-                
-    if doctest:
-        suite.addTests(DocTestSuite(module)._tests)
+        if getmodule(object) == module or module.__name__ =='interactive':                 
+            if unittest:
+                if isinstance(object, type) and issubclass(object, TestCase):
+                    suite.addTests(loader.loadTestsFromTestCase(object)._tests)
+
+                if callable(object) and not isinstance(object, (partial, type)):
+                    function_test_case = infer(object)
+                    if function_test_case:
+                        suite.addTest(function_test_case)
+
+            if doctest and hasattr(object, '__name__'): suite.addTests(map(DocTestCase, DocTestFinder().find(object)))
     return suite
 
 
-# In[3]:
+# In[4]:
 
 
 def infer(object)->TestCase:
@@ -76,7 +82,7 @@ def infer(object)->TestCase:
         return FunctionTestCase(partial(find, *annotations.values(), lambda x: returns(object(x))))
 
 
-# In[4]:
+# In[5]:
 
 
 class Result(TestResult):
@@ -86,7 +92,7 @@ class Result(TestResult):
         return '\n'.join((super().__repr__(), str)).rstrip()
 
 
-# In[5]:
+# In[6]:
 
 
 @dataclass
@@ -101,7 +107,6 @@ class Sweet(TestSuite):
     unittest: bool = True
     
     def __post_init__(Discover): 
-        global doctest, unittest
         from importlib import import_module
         TestSuite.__init__(Discover)
         if isinstance(Discover.module, str): 
@@ -118,7 +123,7 @@ class Sweet(TestSuite):
         finally: Discover._tests = list(filter(bool, Discover._tests))
 
 
-# In[6]:
+# In[7]:
 
 
 settings.register_profile('sweet', settings(
@@ -128,7 +133,7 @@ settings.register_profile('sweet', settings(
 settings.load_profile('sweet')
 
 
-# In[7]:
+# In[8]:
 
 
 @dataclass
@@ -150,7 +155,7 @@ class Testing(NodeTransformer):
     visit_ClassDef = visit_FunctionDef
     
     def __call__(Testing):
-        main, module = __import__('__main__'), ModuleType('__interactive')
+        main, module = __import__('__main__'), ModuleType('interactive')
         while Testing.objects:
             name = Testing.objects.pop(0)
             if hasattr(main, name): setattr(module, name, getattr(main, name))
@@ -159,7 +164,7 @@ class Testing(NodeTransformer):
             print(repr(sweet.run()))
 
 
-# In[8]:
+# In[9]:
 
 
 def unload_ipython_extension(ip=None):
@@ -167,7 +172,7 @@ def unload_ipython_extension(ip=None):
         ip.events.callbacks['post_run_cell'] = [object for object in ip.events.callbacks['post_run_cell'] if not isinstance(object, Testing)]
 
 
-# In[9]:
+# In[10]:
 
 
 def load_ipython_extension(ip=get_ipython()):
@@ -176,7 +181,13 @@ def load_ipython_extension(ip=get_ipython()):
         ip.events.register('post_run_cell', object)
 
 
-# In[10]:
+# In[11]:
+
+
+import builtins
+
+
+# In[12]:
 
 
 if __name__ == '__main__':

@@ -23,6 +23,9 @@ __Sweet__ is an easy way to test interactive code. It combines unittest, doctest
         assert True
 ```
 
+    <sweet.Result run=2 errors=0 failures=0>
+
+
 
 ```python
     ct = 0
@@ -32,18 +35,12 @@ __Sweet__ is an easy way to test interactive code. It combines unittest, doctest
         return x
 ```
 
-    <sweet.Result run=1 errors=0 failures=0>
-
-
 
 ```python
     def after_hypothesis():
         global ct
         assert ct > 0
 ```
-
-    <sweet.Result run=1 errors=0 failures=0>
-
 
 
 ```python
@@ -55,3 +52,10 @@ __Sweet__ is an easy way to test interactive code. It combines unittest, doctest
         print(f"""and the source shows the {Sweet(module='sweet').run(result)}""")
         print("🏆")
 ```
+
+    [NbConvertApp] Converting notebook readme.ipynb to markdown
+    [NbConvertApp] Writing 1119 bytes to readme.md
+    The readme shows the <sweet.Result run=4 errors=0 failures=0>
+    and the source shows the <sweet.Result run=8 errors=0 failures=0>
+    🏆
+
