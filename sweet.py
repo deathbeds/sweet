@@ -181,12 +181,6 @@ def load_ipython_extension(ip=get_ipython()):
         ip.events.register('post_run_cell', object)
 
 
-# In[11]:
-
-
-import builtins
-
-
 # In[12]:
 
 
