@@ -108,20 +108,20 @@ class Sweet(TestSuite):
 # In[5]:
 
 
-settings.register_profile('ip', settings(
+settings.register_profile('sweet', settings(
         suppress_health_check=(HealthCheck.return_value,),
         verbosity=Verbosity.normal,))
 
+settings.load_profile('sweet')
 def load_ipython_extension(ip=None):
-    settings.load_profile('ip')
+    ...
 
 
-# In[ ]:
+# In[8]:
 
 
 if __name__ == '__main__':
     get_ipython().system('jupyter nbconvert --to python sweet.ipynb readme.ipynb')
-    
     result = Sweet(module='readme').run()
     get_ipython().system('rm readme.py')
     print(result)

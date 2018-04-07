@@ -20,6 +20,16 @@ __Sweet__ is an easy way to test interactive code. It combines unittest, doctest
         The docstring is also tested.
         """
         assert True
+        
+    ct = 0
+    def when_there_are_annotations(x: int):
+        global ct
+        ct +=1
+        return x
+
+    def after_hypothesis():
+        global ct
+        assert ct > 0
 ```
 
 
@@ -30,9 +40,3 @@ __Sweet__ is an easy way to test interactive code. It combines unittest, doctest
         print(result)
         print(Sweet(module='sweet').run(result))
 ```
-
-    [NbConvertApp] Converting notebook readme.ipynb to markdown
-    [NbConvertApp] Writing 1004 bytes to readme.md
-    <unittest.result.TestResult run=2 errors=0 failures=0>
-    <unittest.result.TestResult run=4 errors=0 failures=0>
-
