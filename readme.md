@@ -69,6 +69,10 @@ Using [__monkeytype__]()
     __import__('IPython').display.Pretty(filename='readme.pyi')
 ```
 
+    The sweet.typing extension is already loaded. To reload it, use:
+      %reload_ext sweet.typing
+
+
 
 
 
@@ -95,10 +99,3 @@ Using [__monkeytype__]()
         print(f"""and the source shows the {Sweet(module='sweet').run(result)}""")
         print("🏆")
 ```
-
-    [NbConvertApp] Converting notebook readme.ipynb to markdown
-    [NbConvertApp] Writing 1912 bytes to readme.md
-    The readme shows the <sweet.test.Result run=4 errors=0 failures=0>
-    and the source shows the <sweet.test.Result run=4 errors=0 failures=0>
-    🏆
-
