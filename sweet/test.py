@@ -181,15 +181,15 @@ def load_ipython_extension(ip=get_ipython()):
         ip.events.register('post_run_cell', object)
 
 
-# In[12]:
+# In[11]:
 
 
 if __name__ == '__main__':
-    get_ipython().system('jupyter nbconvert --to python sweet.ipynb readme.ipynb')
-    result = Sweet(module='readme').run()
-    get_ipython().system('rm readme.py')
-    print(result)
-    print(Sweet(module=__name__).run(result))
-    unload_ipython_extension()
-    load_ipython_extension()
+    get_ipython().system('jupyter nbconvert --to python test.ipynb')
+#         result = Sweet(module='readme').run()
+#         !rm readme.py
+#         print(result)
+#         print(Sweet(module=__name__).run(result))
+#         unload_ipython_extension()
+#         load_ipython_extension()
 
