@@ -1,5 +1,5 @@
 
-# testing is __Sweet__
+# testing and typing is __Sweet__
     
 [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/deathbeds/sweet/master?filepath=readme.ipynb) 
    
@@ -25,7 +25,7 @@ Because creating a function or class should do more than create a name.
         assert True
 ```
 
-    <sweet.Result run=2 errors=0 failures=0>
+    <sweet.test.Result run=2 errors=0 failures=0>
 
 
 
@@ -37,7 +37,7 @@ Because creating a function or class should do more than create a name.
         return x
 ```
 
-    <sweet.Result run=1 errors=0 failures=0>
+    <sweet.test.Result run=1 errors=0 failures=0>
 
 
 
@@ -47,8 +47,47 @@ Because creating a function or class should do more than create a name.
         assert ct > 0
 ```
 
-    <sweet.Result run=1 errors=0 failures=0>
+    <sweet.test.Result run=1 errors=0 failures=0>
 
+
+# Interactive typing 
+
+Using [__monkeytype__]()
+
+
+```python
+    %load_ext sweet.typing
+    def f(x):
+        return str(x)
+    %typing
+    f(10)
+    f(10.)
+    f('asdf')
+    f(__import__('pandas').util.testing.makeDataFrame())
+    after_hypothesis()
+    %typing readme.pyi
+    __import__('IPython').display.Pretty(filename='readme.pyi')
+```
+
+    The sweet.typing extension is already loaded. To reload it, use:
+      %reload_ext sweet.typing
+
+
+
+
+
+    from pandas.core.frame import DataFrame
+    from typing import Union
+    
+    
+    def after_hypothesis() -> None: ...
+    
+    
+    def f(x: Union[float, DataFrame, str, int]) -> str: ...
+
+
+
+# Developer.
 
 
 ```python

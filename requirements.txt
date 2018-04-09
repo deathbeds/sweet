@@ -1,2 +1,4 @@
 dataclasses
 hypothesis
+monkeytype
+pandas
